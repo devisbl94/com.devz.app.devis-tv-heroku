@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Sat, 19 Mar 2022 03:31:31 GMT
+ * Generated: Sat, 19 Mar 2022 04:32:26 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -7978,7 +7978,7 @@ var APP_com_devz_app_devis_tv = (function () {
     return fetch(`${base}/${type}/top_rated?api_key=${apiKey}`);
   };
   const getAnimatedMovies = async type => {
-    return fetch(`${base}/discover/${type}/?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&page=1&with_genres=16`);
+    return fetch(`${base}/discover/${type}?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&page=1&with_genres=16`);
   };
   const getUpcomingMovieReleases = async () => {
     return fetch(`${base}/movie/upcoming?api_key=${apiKey}`);
@@ -7987,7 +7987,7 @@ var APP_com_devz_app_devis_tv = (function () {
     return fetch(`${base}/tv/airing_today?api_key=${apiKey}`);
   };
   const getDocumentaries = async type => {
-    return fetch(`${base}/discover/${type}/?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&page=1&with_genres=99`);
+    return fetch(`${base}/discover/${type}?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&page=1&with_genres=99`);
   };
 
   /*
