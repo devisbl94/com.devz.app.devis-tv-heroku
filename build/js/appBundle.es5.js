@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Sun, 20 Mar 2022 19:52:18 GMT
+ * Generated: Wed, 23 Mar 2022 14:29:40 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -7394,6 +7394,175 @@ var APP_com_devz_app_devis_tv = (function () {
   })(lng.textures.ImageTexture);
 
   /**
+   * Copyright 2020 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  /**
+   * Returns a styles object for use by components
+   * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
+   * @param {Object} theme - theme to be provided to styles
+   */
+  var createStyles = (function (styles, theme) {
+    return typeof styles === 'function' ? styles(theme) : styles;
+  });
+
+  /**
+   * Helpers for lng.Tools.getRoundRect
+   */
+
+  var RoundRect = {
+    /**
+     * Returns a value that will render as the given width (w)
+     * when passed to lng.Tools.getRoundRect
+     * @param {number} w - px value for expected width
+     * @param {*} options
+     * @param {number} options.padding - px value for both left and right padding
+     * @param {number} options.paddingLeft - px value for left padding, overrides options.padding
+     * @param {number} options.paddingRight - px value for right padding, overrides options.padding
+     * @param {number} options.strokeWidth - px value for stroke width
+     */
+    getWidth: function getWidth(w) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var _padding$paddingLeft$ = _objectSpread2({
+        padding: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        strokeWidth: 0
+      }, options),
+          padding = _padding$paddingLeft$.padding,
+          paddingLeft = _padding$paddingLeft$.paddingLeft,
+          paddingRight = _padding$paddingLeft$.paddingRight,
+          strokeWidth = _padding$paddingLeft$.strokeWidth;
+
+      if (!w) return 0;
+      return w - (paddingLeft || padding) - (paddingRight || padding) - strokeWidth;
+    },
+
+    /**
+     * Returns a value that will render as the given height (h)
+     * when passed to lng.Tools.getRoundRect
+     * @param {number} h - px value for expected width
+     * @param {*} options
+     * @param {number} options.padding - px value for both bottom and top padding
+     * @param {number} options.paddingBottom - px value for bottom padding, overrides options.padding
+     * @param {number} options.paddingTop - px value for top padding, overrides options.padding
+     * @param {number} options.strokeWidth - px value for stroke width
+     */
+    getHeight: function getHeight(h) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var _padding$paddingBotto = _objectSpread2({
+        padding: 0,
+        paddingBottom: 0,
+        paddingTop: 0,
+        strokeWidth: 0
+      }, options),
+          padding = _padding$paddingBotto.padding,
+          paddingBottom = _padding$paddingBotto.paddingBottom,
+          paddingTop = _padding$paddingBotto.paddingTop,
+          strokeWidth = _padding$paddingBotto.strokeWidth;
+
+      if (!h) return 0;
+      return h - (paddingBottom || padding) - (paddingTop || padding) - strokeWidth;
+    }
+  };
+  /**
+   * Merges two objects together and returns the duplicate.
+   *
+   * @param {Object} target - object to be cloned
+   * @param {Object} [object] - secondary object to merge into clone
+   */
+
+  function clone(target, object) {
+    var _clone = _objectSpread2({}, target);
+
+    if (!object || target === object) return _clone;
+
+    for (var key in object) {
+      var value = object[key];
+
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        _clone[key] = getMergeValue(key, target, object);
+      } else {
+        _clone[key] = value;
+      }
+    }
+
+    return _clone;
+  }
+
+  function getMergeValue(key, target, object) {
+    var targetVal = target[key];
+    var objectVal = object[key];
+    var targetValType = typeof targetVal;
+    var objectValType = typeof objectVal;
+
+    if (targetValType !== objectValType || objectValType === 'function' || Array.isArray(objectVal)) {
+      return objectVal;
+    }
+
+    if (objectVal && objectValType === 'object') {
+      return clone(targetVal, objectVal);
+    }
+
+    return objectVal;
+  }
+  /**
+   * Returns the rendered width of a given text texture
+   * @param {Object} text - text texture properties
+   * @param {string} text.text - text value
+   * @param {string} text.fontStyle - css font-style property
+   * @param {(string|number)} text.fontWeight - css font-weight property
+   * @param {string} [fontSize=0] - css font-size property (in px)
+   * @param {string} [text.fontFamily=sans-serif] - css font-weight property
+   * @param {string} text.fontFace - alias for fontFamily
+   *
+   * @returns {number} text width
+   * */
+
+
+  function measureTextWidth() {
+    var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var fontStyle = text.fontStyle,
+        fontWeight = text.fontWeight,
+        fontSize = text.fontSize,
+        _text$fontFamily = text.fontFamily,
+        fontFamily = _text$fontFamily === void 0 ? text.fontFace || 'sans-serif' : _text$fontFamily;
+    var fontCss = [fontStyle, fontWeight, fontSize ? "".concat(fontSize, "px") : '0', "'".concat(fontFamily, "'")].filter(Boolean).join(' ');
+    ctx.font = fontCss;
+    var textMetrics = ctx.measureText(text.text || '');
+    return Math.round(textMetrics.width);
+  }
+  /**
+   * Returns first argument that is a number. Useful for finding ARGB numbers. Does not convert strings to numbers
+   * @param {...*} number - maybe a number
+   **/
+
+  function getFirstNumber() {
+    for (var _len = arguments.length, numbers = new Array(_len), _key = 0; _key < _len; _key++) {
+      numbers[_key] = arguments[_key];
+    }
+
+    return numbers.find(Number.isFinite);
+  }
+  /**
    * Naively looks for dimensional prop (i.e. w, h, x, y, etc.), first searching for
    * a transition target value then defaulting to the current set value
    * @param {string} prop - property key
@@ -7414,6 +7583,43 @@ var APP_com_devz_app_devis_tv = (function () {
   var getH = function getH(component) {
     return getDimension('h', component) || component.renderHeight;
   };
+
+  function withStyles(Base, styles, theme) {
+    var _theme = theme || Base.theme;
+
+    var _styles = Base.styles ? clone(Base.styles, createStyles(styles, _theme)) : createStyles(styles, _theme);
+
+    return /*#__PURE__*/function (_Base) {
+      _inherits(_class, _Base);
+
+      var _super = _createSuper(_class);
+
+      function _class() {
+        _classCallCheck(this, _class);
+
+        return _super.apply(this, arguments);
+      }
+
+      _createClass(_class, [{
+        key: "styles",
+        get: function get() {
+          return _styles;
+        }
+      }], [{
+        key: "name",
+        get: function get() {
+          return Base.name;
+        }
+      }, {
+        key: "styles",
+        get: function get() {
+          return _styles;
+        }
+      }]);
+
+      return _class;
+    }(Base);
+  }
 
   /**
    * Returns a function, that, as long as it continues to be invoked, will not
@@ -7485,6 +7691,476 @@ var APP_com_devz_app_devis_tv = (function () {
 
   debounce.debounce = debounce;
   var debounce_1 = debounce;
+
+  var Icon = /*#__PURE__*/function (_lng$Component) {
+    _inherits(Icon, _lng$Component);
+
+    var _super = _createSuper(Icon);
+
+    function Icon() {
+      _classCallCheck(this, Icon);
+
+      return _super.apply(this, arguments);
+    }
+
+    _createClass(Icon, [{
+      key: "icon",
+      get: function get() {
+        return this._icon;
+      },
+      set: function set(icon) {
+        this._icon = icon;
+
+        this._update();
+      }
+    }, {
+      key: "_init",
+      value: function _init() {
+        this._update();
+      }
+    }, {
+      key: "_update",
+      value: function _update() {
+        var icon = this.icon,
+            w = this.w,
+            h = this.h;
+        var template = getIconTemplate(icon, w, h);
+        this.patch(template);
+      }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          color: 0xffffffff,
+          w: 0,
+          h: 0
+        };
+      }
+    }]);
+
+    return Icon;
+  }(lng.Component);
+
+  var _map = [/^<svg.*<\/svg>$/, /\.svg$/, /\.(a?png|bmp|gif|ico|cur|jpe?g|pjp(eg)?|jfif|tiff?|webp)$/].map(function (regex) {
+    return RegExp.prototype.test.bind(regex);
+  }),
+      _map2 = _slicedToArray(_map, 3),
+      isSvgTag = _map2[0],
+      isSvgURI = _map2[1],
+      isImageURI = _map2[2];
+
+  function getIconTemplate(icon, w, h) {
+    var template = {
+      w: w,
+      h: h
+    };
+
+    switch (true) {
+      case isSvgTag(icon):
+        template.texture = lng.Tools.getSvgTexture("data:image/svg+xml,".concat(encodeURIComponent(icon)), w, h);
+        break;
+
+      case isSvgURI(icon):
+        template.texture = lng.Tools.getSvgTexture(icon, w, h);
+        break;
+
+      case isImageURI(icon):
+        template.src = icon;
+        break;
+    }
+
+    return template;
+  }
+
+  var styles = {
+    w: 150,
+    h: 40,
+    radius: 0,
+    background: {
+      color: 0xff1f1f1f
+    },
+    icon: {
+      color: 0xffffffff
+    },
+    text: {
+      fontSize: 20,
+      color: 0xffffffff
+    },
+    padding: 50,
+    stroke: {
+      color: 0x00,
+      weight: 2
+    },
+    focused: {
+      background: {
+        color: 0xffffffff
+      },
+      text: {
+        color: 0xff1f1f1f
+      },
+      icon: {
+        color: 0xff1f1f1f
+      }
+    }
+  };
+
+  var Button = /*#__PURE__*/function (_lng$Component) {
+    _inherits(Button, _lng$Component);
+
+    var _super = _createSuper(Button);
+
+    function Button() {
+      _classCallCheck(this, Button);
+
+      return _super.apply(this, arguments);
+    }
+
+    _createClass(Button, [{
+      key: "_construct",
+      value: function _construct() {
+        var _this = this;
+
+        this._focused = false;
+        this._whenEnabled = new Promise(function (resolve) {
+          return _this._enable = resolve;
+        }, console.error);
+        this._strokeWeight = 2;
+        this._strokeColor = 0x00;
+      }
+    }, {
+      key: "_init",
+      value: function _init() {
+        this._update();
+      }
+    }, {
+      key: "_focus",
+      value: function _focus() {
+        if (this._smooth === undefined) this._smooth = true;
+        this._focused = true;
+
+        this._update();
+      }
+    }, {
+      key: "_unfocus",
+      value: function _unfocus() {
+        this._focused = false;
+
+        this._update();
+      }
+    }, {
+      key: "_updateColor",
+      value: function _updateColor() {
+        var color = this._focused ? getFirstNumber(this.focusedBackground, this.styles.focused.background.color) : getFirstNumber(this.background, this.styles.background.color);
+
+        if (this._smooth) {
+          this.smooth = {
+            color: color
+          };
+        } else {
+          this.color = color;
+        }
+      }
+    }, {
+      key: "_updateTitle",
+      value: function _updateTitle() {
+        if (this.title) {
+          this._Title.text = _objectSpread2(_objectSpread2({}, this.styles.text), {}, {
+            fontColor: this.styles.text.color,
+            fontSize: this.fontSize || this.styles.text.fontSize,
+            fontFamily: this.styles.text.fontFace || this.styles.text.fontFamily || this.stage._options.defaultFontFace,
+            text: this.title
+          });
+          var color = this._focused ? getFirstNumber(this.focusedTextColor, this.styles.focused.text.color) : getFirstNumber(this.textColor, this.styles.text.color);
+
+          if (this._smooth) {
+            this._Title.smooth = {
+              color: color
+            };
+          } else {
+            this._Title.color = color;
+          }
+        } else {
+          this._Title.texture = false;
+        }
+      }
+    }, {
+      key: "_updateIcon",
+      value: function _updateIcon() {
+        if (this.icon) {
+          var _this$icon = this.icon,
+              color = _this$icon.color,
+              size = _this$icon.size,
+              spacing = _this$icon.spacing,
+              src = _this$icon.src;
+
+          this._Icon.patch({
+            w: size,
+            h: size,
+            icon: src,
+            flexItem: {
+              marginRight: this.title ? spacing : 0
+            }
+          });
+
+          var iconColor = this._focused ? getFirstNumber(this.focusedIconColor, this.styles.focused.icon.color) : getFirstNumber(color, this.styles.icon.color);
+
+          if (this._smooth) {
+            this._Icon.smooth = {
+              color: iconColor
+            };
+          } else {
+            this._Icon.color = iconColor;
+          }
+        } else {
+          this._Icon.patch({
+            w: 0,
+            h: 0,
+            texture: false,
+            flexItem: false
+          });
+        }
+      }
+    }, {
+      key: "_updateStroke",
+      value: function _updateStroke() {
+        if (this.stroke && !this._focused) {
+          var radius = this.radius || this.styles.radius;
+          this.texture = lng.Tools.getRoundRect(RoundRect.getWidth(this.w), RoundRect.getHeight(this.h), radius, 0x00, true, 0xffffffff);
+          this._Stroke.color = this.strokeColor;
+          this._Stroke.texture = lng.Tools.getRoundRect(RoundRect.getWidth(this.w), RoundRect.getHeight(this.h), radius, this.strokeWeight, 0xffffffff, true, this.background);
+        } else {
+          var _radius = this.radius || this.styles.radius;
+
+          this.texture = lng.Tools.getRoundRect(RoundRect.getWidth(this.w), RoundRect.getHeight(this.h), _radius);
+          this._Stroke.texture = false;
+        }
+      }
+    }, {
+      key: "_updateWidth",
+      value: function _updateWidth() {
+        if (!this.fixed) {
+          var iconSize = this._icon ? this._icon.size + this._icon.spacing : 0;
+          var padding = getFirstNumber(this.padding, this.styles.padding, 10);
+          var w = measureTextWidth(this._Title.text || {}) + padding * 2 + iconSize;
+
+          if (w && w !== this.w) {
+            this.w = w > this.styles.w ? w : this.styles.w;
+            this.fireAncestors('$itemChanged');
+            this.signal('buttonWidthChanged', {
+              w: this.w
+            });
+          }
+        }
+      }
+    }, {
+      key: "_update",
+      value: function _update() {
+        var _this2 = this;
+
+        this._whenEnabled.then(function () {
+          _this2._updateColor();
+
+          _this2._updateTitle();
+
+          _this2._updateIcon();
+
+          _this2._updateStroke();
+
+          _this2._updateWidth();
+        });
+      }
+    }, {
+      key: "_handleEnter",
+      value: function _handleEnter() {
+        if (typeof this.onEnter === 'function') {
+          this.onEnter(this);
+        }
+      }
+    }, {
+      key: "radius",
+      get: function get() {
+        return this._radius;
+      },
+      set: function set(radius) {
+        if (this._radius !== radius) {
+          this._radius = radius;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "title",
+      get: function get() {
+        return this._title;
+      },
+      set: function set(title) {
+        if (this._title !== title) {
+          this._title = title;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "icon",
+      get: function get() {
+        return this._icon;
+      },
+      set: function set(_ref) {
+        var src = _ref.src,
+            _ref$size = _ref.size,
+            size = _ref$size === void 0 ? 20 : _ref$size,
+            _ref$spacing = _ref.spacing,
+            spacing = _ref$spacing === void 0 ? 5 : _ref$spacing,
+            _ref$color = _ref.color,
+            color = _ref$color === void 0 ? 0xffffffff : _ref$color;
+
+        if (src) {
+          this._icon = {
+            src: src,
+            size: size,
+            spacing: spacing,
+            color: color
+          };
+        } else {
+          this._icon = null;
+        }
+
+        this._update();
+      }
+    }, {
+      key: "strokeWeight",
+      get: function get() {
+        return this._strokeWeight;
+      },
+      set: function set(strokeWeight) {
+        if (this._strokeWeight !== strokeWeight) {
+          this._strokeWeight = strokeWeight;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "strokeColor",
+      get: function get() {
+        return this._strokeColor;
+      },
+      set: function set(strokeColor) {
+        if (this._strokeColor !== strokeColor) {
+          this._strokeColor = strokeColor;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "stroke",
+      get: function get() {
+        return this._stroke;
+      },
+      set: function set(stroke) {
+        if (this._stroke !== stroke) {
+          this._stroke = stroke;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "w",
+      get: function get() {
+        return this._w;
+      },
+      set: function set(w) {
+        if (this._w !== w) {
+          this._w = w;
+
+          this._update();
+        }
+      }
+    }, {
+      key: "label",
+      get: function get() {
+        return this._label || this._title;
+      },
+      set: function set(label) {
+        this._label = label;
+      }
+    }, {
+      key: "announce",
+      get: function get() {
+        // TODO - Localization?
+        // Do we need a locale file with
+        // component translations?
+        return this.label + ', Button';
+      }
+    }, {
+      key: "_Content",
+      get: function get() {
+        return this.tag('Content');
+      }
+    }, {
+      key: "_Title",
+      get: function get() {
+        return this.tag('Content.Title');
+      }
+    }, {
+      key: "_Icon",
+      get: function get() {
+        return this.tag('Content.Icon');
+      }
+    }, {
+      key: "_Stroke",
+      get: function get() {
+        return this.tag('Stroke');
+      }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          w: this.styles.w,
+          h: this.styles.h,
+          radius: this.styles.radius,
+          strokeColor: this.styles.stroke.color,
+          strokeWeight: this.styles.stroke.weight,
+          Content: {
+            mount: 0.5,
+            x: function x(w) {
+              return w / 2;
+            },
+            y: function y(h) {
+              return h / 2;
+            },
+            flex: {
+              direction: 'row',
+              alignContent: 'center',
+              alignItems: 'center'
+            },
+            Icon: {
+              type: Icon
+            },
+            // TODO: Wonky lineHeight / fontsize from Lightning
+            // Move title down 2 pixels to _visually_ center it
+            // inside the button
+            Title: {
+              y: 2
+            }
+          },
+          Stroke: {
+            zIndex: -1,
+            mount: 0.5,
+            x: function x(w) {
+              return w / 2;
+            },
+            y: function y(h) {
+              return h / 2;
+            }
+          }
+        };
+      }
+    }]);
+
+    return Button;
+  }(lng.Component);
+
+  var Button$1 = withStyles(Button, styles);
 
   var FocusManager = /*#__PURE__*/function (_lng$Component) {
     _inherits(FocusManager, _lng$Component);
@@ -8622,7 +9298,7 @@ var APP_com_devz_app_devis_tv = (function () {
   };
   var formatDate = function formatDate(date) {
     var newDate = new Date(date);
-    return newDate.getMonth() + 1 + '/' + (newDate.getDate() + 1) + '/' + newDate.getFullYear();
+    return newDate.getMonth() + 1 + '/' + newDate.getDate() + '/' + newDate.getFullYear();
   };
 
   var MediaItem = /*#__PURE__*/function (_Lightning$Component) {
@@ -8727,23 +9403,34 @@ var APP_com_devz_app_devis_tv = (function () {
       }
     }, {
       key: "data",
+      get: function get() {
+        return this._data;
+      },
       set: function set(data) {
+        this._data = {
+          imageUrl: data.poster_path == null ? Utils.asset('./images/unavailable.png') : data.poster_path,
+          title: typeof data.title !== 'undefined' ? data.title : data.name,
+          genreIds: _toConsumableArray(data.genre_ids),
+          releaseDate: typeof data.release_date !== 'undefined' ? 'Release date: ' + formatDate(data.release_date) : 'First aired: ' + formatDate(data.first_air_date),
+          desc: data.overview,
+          rating: parseFloat(data.vote_average) > 0 ? 'Rating: ' + String(data.vote_average) : 'Rating: N/A'
+        };
         this.tag('ImageWrapper').patch({
           Image: {
             texture: {
               type: lng.textures.ImageTexture,
-              src: getImgUrl(data.poster_path, 300)
+              src: this._data.imageUrl.indexOf('unavailable') > -1 ? this._data.imageUrl : getImgUrl(this._data.imageUrl, 300)
             }
           },
           Info: {
             Title: {
-              text: typeof data.title !== 'undefined' ? data.title : data.name
+              text: this._data.title
             },
             ReleaseDate: {
-              text: typeof data.release_date !== 'undefined' ? 'Release date: ' + formatDate(data.release_date) : 'First aired: ' + formatDate(data.first_air_date)
+              text: this._data.releaseDate
             },
             Rating: {
-              text: parseFloat(data.vote_average) > 0 ? 'Rating: ' + String(data.vote_average) : 'Rating: N/A'
+              text: this._data.rating
             }
           }
         });
@@ -8928,6 +9615,7 @@ var APP_com_devz_app_devis_tv = (function () {
             });
           });
           _this._row.items = items;
+          _this._data = data;
         }).catch(function (error) {
           console.log(error);
         });
@@ -8936,6 +9624,35 @@ var APP_com_devz_app_devis_tv = (function () {
       key: "_getFocused",
       value: function _getFocused() {
         return this._row;
+      }
+    }, {
+      key: "_focus",
+      value: function _focus() {
+        this.tag('Row').patch({
+          PlaceHolder: {
+            text: {
+              highlight: true
+            }
+          }
+        });
+      }
+    }, {
+      key: "_unfocus",
+      value: function _unfocus() {
+        this.tag('Row').patch({
+          PlaceHolder: {
+            text: {
+              highlight: false
+            }
+          }
+        });
+      }
+    }, {
+      key: "_handleEnter",
+      value: function _handleEnter() {
+        if (this._row.selected) {
+          this.fireAncestors('$getItemSelected', this._row.selected.data);
+        }
       }
     }, {
       key: "label",
@@ -8957,6 +9674,50 @@ var APP_com_devz_app_devis_tv = (function () {
       get: function get() {
         return this.tag('Row');
       }
+    }, {
+      key: "applyFilter",
+      value: function applyFilter(filterId) {
+        var items = [];
+
+        if (filterId == 0) {
+          this._data.results.map(function (item) {
+            items.push({
+              type: MediaItem,
+              data: item
+            });
+          });
+
+          this._data.results.map(function (item) {
+            items.push({
+              type: MediaItem,
+              data: item
+            });
+          });
+        } else {
+          this._data.results.map(function (item) {
+            for (var index in item) {
+              if (index == 'genre_ids') {
+                item[index].map(function (genreId) {
+                  if (genreId === filterId) {
+                    items.push({
+                      type: MediaItem,
+                      data: item
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
+
+        if (items.length == 0) {
+          this._row.items = [];
+          this.tag('Row.PlaceHolder').setSmooth('alpha', 1);
+        } else {
+          this.tag('Row.PlaceHolder').setSmooth('alpha', 0.0001);
+          this._row.items = items;
+        }
+      }
     }], [{
       key: "_template",
       value: function _template() {
@@ -8976,7 +9737,21 @@ var APP_com_devz_app_devis_tv = (function () {
             y: 100,
             itemSpacing: 40,
             wrapSelected: true,
-            scrollIndex: 0
+            scrollIndex: 0,
+            PlaceHolder: {
+              alpha: 0.0001,
+              x: 620,
+              y: 200,
+              text: {
+                text: 'No items available',
+                fontColor: Colors('white').get(),
+                fontFace: 'Regular',
+                fontSize: 48,
+                highlightPaddingLeft: 20,
+                highlightPaddingRight: 20,
+                highlightColor: 0x8c000000
+              }
+            }
           }
         };
       }
@@ -8986,7 +9761,10 @@ var APP_com_devz_app_devis_tv = (function () {
   }(lng.Component);
 
   var apiKey = 'f90ec6ca1b35404c3fe1890ef8aeffbf';
-  var base = 'https://api.themoviedb.org/3';
+  var base = 'https://api.themoviedb.org/3'; // export const getGenres = async type => {
+  //     return fetch(`${base}/genre/${type}/list?api_key=${apiKey}`)
+  // }
+
   var getPopular = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -9128,33 +9906,37 @@ var APP_com_devz_app_devis_tv = (function () {
     };
   }();
 
-  var App = /*#__PURE__*/function (_Lightning$Component) {
-    _inherits(App, _Lightning$Component);
+  var MainPage = /*#__PURE__*/function (_Lightning$Component) {
+    _inherits(MainPage, _Lightning$Component);
 
-    var _super = _createSuper(App);
+    var _super = _createSuper(MainPage);
 
-    function App() {
-      _classCallCheck(this, App);
+    function MainPage() {
+      _classCallCheck(this, MainPage);
 
       return _super.apply(this, arguments);
     }
 
-    _createClass(App, [{
-      key: "_getFocused",
-      value: function _getFocused() {
-        return this.tag('Column');
-      }
-    }], [{
-      key: "getFonts",
-      value: function getFonts() {
-        return [{
-          family: 'Regular',
-          url: Utils.asset('fonts/Roboto-Regular.ttf')
-        }];
+    _createClass(MainPage, [{
+      key: "_init",
+      value: function _init() {
+        this._setState('NavBar');
       }
     }, {
+      key: "selectedChange",
+      value: function selectedChange(itemSelected) {
+        this.tag('Content').items.map(function (row) {
+          row.applyFilter(itemSelected.genreId);
+        });
+      }
+    }], [{
       key: "_template",
       value: function _template() {
+        var ButtonStyle = {
+          type: Button$1,
+          radius: 5,
+          h: 60
+        };
         return {
           Background: {
             w: 1920,
@@ -9162,7 +9944,7 @@ var APP_com_devz_app_devis_tv = (function () {
             color: 0xff273d3d,
             rect: true
           },
-          Column: {
+          Content: {
             type: Column,
             y: 200,
             items: [{
@@ -9222,14 +10004,395 @@ var APP_com_devz_app_devis_tv = (function () {
             rect: true,
             w: 1920,
             h: 150,
-            color: 0xff273d3d
+            color: 0xff273d3d,
+            NavBar: {
+              type: Row,
+              alpha: 1,
+              x: 150,
+              y: 60,
+              itemSpacing: 40,
+              scrollIndex: 0,
+              signals: {
+                selectedChange: true
+              },
+              items: [_objectSpread2(_objectSpread2({}, ButtonStyle), {}, {
+                title: 'All',
+                genreId: 0
+              }), _objectSpread2(_objectSpread2({}, ButtonStyle), {}, {
+                title: 'Animation',
+                genreId: 16
+              }), _objectSpread2(_objectSpread2({}, ButtonStyle), {}, {
+                title: 'Drama',
+                genreId: 18
+              }), _objectSpread2(_objectSpread2({}, ButtonStyle), {}, {
+                title: 'Mystery',
+                genreId: 9648
+              }), _objectSpread2(_objectSpread2({}, ButtonStyle), {}, {
+                title: 'Family ',
+                genreId: 10751
+              })]
+            }
           },
           Logo: {
             x: 1500,
             y: 60,
-            src: Utils.asset('images/logo.png')
+            src: Utils.asset('../../static/images/logo.png')
           }
         };
+      }
+    }, {
+      key: "_states",
+      value: function _states() {
+        return [/*#__PURE__*/function (_this) {
+          _inherits(NavBar, _this);
+
+          var _super2 = _createSuper(NavBar);
+
+          function NavBar() {
+            _classCallCheck(this, NavBar);
+
+            return _super2.apply(this, arguments);
+          }
+
+          _createClass(NavBar, [{
+            key: "_getFocused",
+            value: function _getFocused() {
+              return this.tag('NavBar');
+            }
+          }, {
+            key: "_handleDown",
+            value: function _handleDown() {
+              this._setState('Content');
+            }
+          }]);
+
+          return NavBar;
+        }(this), /*#__PURE__*/function (_this2) {
+          _inherits(Content, _this2);
+
+          var _super3 = _createSuper(Content);
+
+          function Content() {
+            _classCallCheck(this, Content);
+
+            return _super3.apply(this, arguments);
+          }
+
+          _createClass(Content, [{
+            key: "_getFocused",
+            value: function _getFocused() {
+              return this.tag('Content');
+            }
+          }, {
+            key: "_handleUp",
+            value: function _handleUp() {
+              this._setState('NavBar');
+            }
+          }]);
+
+          return Content;
+        }(this)];
+      }
+    }]);
+
+    return MainPage;
+  }(lng.Component);
+
+  var DetailsPage = /*#__PURE__*/function (_Lightning$Component) {
+    _inherits(DetailsPage, _Lightning$Component);
+
+    var _super = _createSuper(DetailsPage);
+
+    function DetailsPage() {
+      _classCallCheck(this, DetailsPage);
+
+      return _super.apply(this, arguments);
+    }
+
+    _createClass(DetailsPage, [{
+      key: "_init",
+      value: function _init() {
+        this._spinRotation = this.tag('Modal.LoadingSpinner').animation({
+          duration: 1,
+          repeat: -1,
+          stopMethod: 'inmediate',
+          actions: [{
+            p: 'rotation',
+            v: {
+              0: 0,
+              1: 6.29
+            }
+          }]
+        });
+      }
+    }, {
+      key: "_getFocused",
+      value: function _getFocused() {
+        return this.tag('Buttons');
+      }
+    }, {
+      key: "data",
+      set: function set(data) {
+        this.tag('Modal.Details').patch({
+          Title: {
+            text: data.title
+          },
+          Description: {
+            text: data.desc.length > 0 ? data.desc : 'No description found.'
+          },
+          Poster: {
+            src: data.imageUrl.indexOf('unavailable') > -1 ? data.imageUrl : getImgUrl(data.imageUrl, 500)
+          },
+          ReleaseDate: {
+            text: data.releaseDate
+          }
+        });
+      }
+    }, {
+      key: "StartLoading",
+      value: function StartLoading() {
+        var _this = this;
+
+        this.tag('Modal.Details.Buttons').selectedIndex = 0;
+
+        this._spinRotation.start();
+
+        this.tag('Modal.Details.Poster').on('txLoaded', function () {
+          _this.tag('Modal.LoadingSpinner').setSmooth('alpha', 0.0001);
+
+          _this.tag('Modal.Details').setSmooth('alpha', 1);
+
+          _this._spinRotation.stop();
+        });
+      }
+    }, {
+      key: "ClearModal",
+      value: function ClearModal() {
+        this._spinRotation.stop();
+
+        this.tag('Modal.LoadingSpinner').setSmooth('alpha', 1);
+        this.tag('Modal.Details').setSmooth('alpha', 0.0001);
+        this.fireAncestors('$unselectItem');
+      }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        var textStyle = {
+          textColor: Colors('white').get(),
+          fontFace: 'Regular'
+        };
+        return {
+          alpha: 0.0001,
+          Shadow: {
+            w: 1920,
+            h: 1080,
+            rect: true,
+            alpha: 0.5,
+            color: Colors('black').get()
+          },
+          Modal: {
+            w: 1536,
+            h: 864,
+            x: 192,
+            y: 108,
+            rect: true,
+            alpha: 0.9,
+            color: Colors('black').get(),
+            Details: {
+              alpha: 0.0001,
+              Title: {
+                x: 100,
+                y: 70,
+                text: _objectSpread2(_objectSpread2({}, textStyle), {}, {
+                  wordWrapWidth: 700,
+                  fontSize: 56
+                })
+              },
+              Description: {
+                x: 100,
+                y: 250,
+                text: _objectSpread2(_objectSpread2({}, textStyle), {}, {
+                  lineHeight: 36,
+                  wordWrapWidth: 700,
+                  wordWrap: true,
+                  maxLines: 12,
+                  maxLinesSuffix: '...',
+                  fontSize: 24
+                })
+              },
+              Buttons: {
+                type: Row,
+                x: 200,
+                y: 750,
+                itemSpacing: 75,
+                items: [{
+                  type: Button$1,
+                  title: 'Play now',
+                  radius: 5,
+                  icon: {
+                    src: Utils.asset('./images/play.png'),
+                    size: 16,
+                    spacing: 8
+                  }
+                }, {
+                  type: Button$1,
+                  title: 'Add to favourites',
+                  radius: 5,
+                  icon: {
+                    src: Utils.asset('./images/star.png'),
+                    size: 16,
+                    spacing: 8
+                  }
+                }]
+              },
+              Poster: {
+                x: 1020,
+                y: 70,
+                w: 400,
+                h: 600
+              },
+              ReleaseDate: {
+                x: 1020,
+                y: 680,
+                text: _objectSpread2(_objectSpread2({}, textStyle), {}, {
+                  fontSize: 18
+                })
+              }
+            },
+            LoadingSpinner: {
+              mount: 0.5,
+              x: function x(w) {
+                return w / 2;
+              },
+              y: function y(h) {
+                return h / 2;
+              },
+              h: 250,
+              w: 250,
+              src: Utils.asset('./images/loading.png')
+            }
+          }
+        };
+      }
+    }]);
+
+    return DetailsPage;
+  }(lng.Component);
+
+  var App = /*#__PURE__*/function (_Lightning$Component) {
+    _inherits(App, _Lightning$Component);
+
+    var _super = _createSuper(App);
+
+    function App() {
+      _classCallCheck(this, App);
+
+      return _super.apply(this, arguments);
+    }
+
+    _createClass(App, [{
+      key: "_init",
+      value: function _init() {
+        this._setState('ShowMain');
+      }
+    }, {
+      key: "$getItemSelected",
+      value: function $getItemSelected(itemlSelected) {
+        this._detailsPage.data = itemlSelected;
+
+        this._setState('ShowDetails');
+      }
+    }, {
+      key: "$unselectItem",
+      value: function $unselectItem() {
+        this._setState('ShowMain');
+      }
+    }, {
+      key: "_detailsPage",
+      get: function get() {
+        return this.tag('DetailsPage');
+      }
+    }], [{
+      key: "getFonts",
+      value: function getFonts() {
+        return [{
+          family: 'Regular',
+          url: Utils.asset('fonts/Roboto-Regular.ttf')
+        }];
+      }
+    }, {
+      key: "_template",
+      value: function _template() {
+        return {
+          MainPage: {
+            type: MainPage
+          },
+          DetailsPage: {
+            type: DetailsPage
+          }
+        };
+      }
+    }, {
+      key: "_states",
+      value: function _states() {
+        return [/*#__PURE__*/function (_this) {
+          _inherits(ShowMain, _this);
+
+          var _super2 = _createSuper(ShowMain);
+
+          function ShowMain() {
+            _classCallCheck(this, ShowMain);
+
+            return _super2.apply(this, arguments);
+          }
+
+          _createClass(ShowMain, [{
+            key: "_getFocused",
+            value: function _getFocused() {
+              return this.tag('MainPage');
+            }
+          }]);
+
+          return ShowMain;
+        }(this), /*#__PURE__*/function (_this2) {
+          _inherits(ShowDetails, _this2);
+
+          var _super3 = _createSuper(ShowDetails);
+
+          function ShowDetails() {
+            _classCallCheck(this, ShowDetails);
+
+            return _super3.apply(this, arguments);
+          }
+
+          _createClass(ShowDetails, [{
+            key: "$enter",
+            value: function $enter() {
+              this._detailsPage.setSmooth('alpha', 1);
+
+              this._detailsPage.StartLoading();
+            }
+          }, {
+            key: "$exit",
+            value: function $exit() {
+              this._detailsPage.setSmooth('alpha', 0.0001);
+            }
+          }, {
+            key: "_getFocused",
+            value: function _getFocused() {
+              return this._detailsPage;
+            }
+          }, {
+            key: "_handleBack",
+            value: function _handleBack() {
+              this._detailsPage.ClearModal();
+
+              this._setState('ShowMain');
+            }
+          }]);
+
+          return ShowDetails;
+        }(this)];
       }
     }]);
 
