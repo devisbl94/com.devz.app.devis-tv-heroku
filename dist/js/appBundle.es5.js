@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Thu, 24 Mar 2022 05:24:57 GMT
+ * Generated: Thu, 24 Mar 2022 23:53:07 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -9333,9 +9333,11 @@ var APP_com_devz_app_devis_tv = (function () {
         this._spinRotation.start();
 
         this.tag('ImageWrapper.Image').on('txLoaded', function () {
-          _this.tag('ImageWrapper.Image').setSmooth('alpha', 1);
+          Registry.setTimeout(function () {
+            _this.tag('ImageWrapper.Image').setSmooth('alpha', 1);
 
-          _this._spinRotation.stop();
+            _this._spinRotation.stop();
+          }, 300);
         });
         this._focusAnimation = this.animation({
           duration: 0.2,
@@ -9675,6 +9677,8 @@ var APP_com_devz_app_devis_tv = (function () {
     }, {
       key: "applyFilter",
       value: function applyFilter(filterId) {
+        var _this2 = this;
+
         var items = [];
 
         if (filterId == 0) {
@@ -9708,12 +9712,24 @@ var APP_com_devz_app_devis_tv = (function () {
           });
         }
 
-        if (items.length == 0) {
-          this._row.items = [];
-          this.tag('Row.PlaceHolder').setSmooth('alpha', 1);
-        } else {
+        this._row.items = [];
+
+        if (items.length > 0) {
           this.tag('Row.PlaceHolder').setSmooth('alpha', 0.0001);
-          this._row.items = items;
+          var count = 0;
+          var interval = Registry.setInterval(function () {
+            if (count == items.length) {
+              Registry.clearInterval(interval);
+            }
+
+            if (items[count]) {
+              _this2._row.appendItems([items[count]]);
+            }
+
+            count++;
+          }, 30);
+        } else {
+          this.tag('Row.PlaceHolder').setSmooth('alpha', 1);
         }
       }
     }], [{
@@ -9923,6 +9939,7 @@ var APP_com_devz_app_devis_tv = (function () {
     }, {
       key: "selectedChange",
       value: function selectedChange(itemSelected) {
+        Registry.clearIntervals();
         this.tag('Content').items.map(function (row) {
           row.applyFilter(itemSelected.genreId);
         });
