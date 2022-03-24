@@ -5,10 +5,10 @@ const port = process.env.PORT || 80
 
 app.use(express.json())
 
-app.use(express.static('build'))
+app.use(express.static('dist'))
 
 app.use('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/build/index.html'))
+    res.sendFile(path.join(__dirname + '/dist/index.html'))
 })
 
 app.listen(port, () => {

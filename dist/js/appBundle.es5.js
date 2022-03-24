@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Wed, 23 Mar 2022 14:29:40 GMT
+ * Generated: Thu, 24 Mar 2022 05:24:57 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -9333,11 +9333,9 @@ var APP_com_devz_app_devis_tv = (function () {
         this._spinRotation.start();
 
         this.tag('ImageWrapper.Image').on('txLoaded', function () {
-          Registry.setTimeout(function () {
-            _this.tag('ImageWrapper.Image').setSmooth('alpha', 1);
+          _this.tag('ImageWrapper.Image').setSmooth('alpha', 1);
 
-            _this._spinRotation.stop();
-          }, 1000);
+          _this._spinRotation.stop();
         });
         this._focusAnimation = this.animation({
           duration: 0.2,
@@ -9371,7 +9369,7 @@ var APP_com_devz_app_devis_tv = (function () {
           }]
         });
         this._fadeAnimation = this.animation({
-          delay: 0.7,
+          delay: 0.4,
           duration: 0.3,
           actions: [{
             t: 'Info',
