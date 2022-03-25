@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Thu, 24 Mar 2022 23:53:07 GMT
+ * Generated: Fri, 25 Mar 2022 04:48:00 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -7107,7 +7107,7 @@ var APP_com_devz_app_devis_tv = (function () {
     }
 
   };
-  autoSetupMixin(videoPlayerPlugin, function () {
+  var VideoPlayer = autoSetupMixin(videoPlayerPlugin, function () {
     precision = ApplicationInstance && ApplicationInstance.stage && ApplicationInstance.stage.getRenderPrecision() || precision;
     videoEl = setupVideoTag();
     textureMode = Settings.get('platform', 'textureMode', false);
@@ -9775,10 +9775,7 @@ var APP_com_devz_app_devis_tv = (function () {
   }(lng.Component);
 
   var apiKey = 'f90ec6ca1b35404c3fe1890ef8aeffbf';
-  var base = 'https://api.themoviedb.org/3'; // export const getGenres = async type => {
-  //     return fetch(`${base}/genre/${type}/list?api_key=${apiKey}`)
-  // }
-
+  var base = 'https://api.themoviedb.org/3';
   var getPopular = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -10248,6 +10245,9 @@ var APP_com_devz_app_devis_tv = (function () {
                     src: Utils.asset('./images/play.png'),
                     size: 16,
                     spacing: 8
+                  },
+                  onEnter: function onEnter(event) {
+                    event.fireAncestors('$enterPlayer');
                   }
                 }, {
                   type: Button$1,
@@ -10294,6 +10294,59 @@ var APP_com_devz_app_devis_tv = (function () {
     return DetailsPage;
   }(lng.Component);
 
+  var MediaPlayer = /*#__PURE__*/function (_Lightning$Component) {
+    _inherits(MediaPlayer, _Lightning$Component);
+
+    var _super = _createSuper(MediaPlayer);
+
+    function MediaPlayer() {
+      _classCallCheck(this, MediaPlayer);
+
+      return _super.apply(this, arguments);
+    }
+
+    _createClass(MediaPlayer, [{
+      key: "_init",
+      value: function _init() {
+        VideoPlayer.consumer(this);
+        var videoUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+
+        var myLoader = function myLoader(url, videoEl) {
+          return new Promise(function (resolve) {
+            videoEl.setAttribute('src', url);
+            videoEl.load();
+            resolve();
+          });
+        };
+
+        VideoPlayer.loader(myLoader);
+        VideoPlayer.open(videoUrl);
+      }
+    }, {
+      key: "PlayVideo",
+      value: function PlayVideo() {
+        VideoPlayer.play();
+      }
+    }, {
+      key: "StopVideo",
+      value: function StopVideo() {
+        VideoPlayer.reload();
+      }
+    }, {
+      key: "SkipForward",
+      value: function SkipForward() {
+        VideoPlayer.skip(5);
+      }
+    }, {
+      key: "SkipBackward",
+      value: function SkipBackward() {
+        VideoPlayer.skip(-5);
+      }
+    }]);
+
+    return MediaPlayer;
+  }(lng.Component);
+
   var App = /*#__PURE__*/function (_Lightning$Component) {
     _inherits(App, _Lightning$Component);
 
@@ -10323,9 +10376,24 @@ var APP_com_devz_app_devis_tv = (function () {
         this._setState('ShowMain');
       }
     }, {
+      key: "$enterPlayer",
+      value: function $enterPlayer() {
+        this._setState('ShowPlayer');
+      }
+    }, {
+      key: "_mainPage",
+      get: function get() {
+        return this.tag('MainPage');
+      }
+    }, {
       key: "_detailsPage",
       get: function get() {
         return this.tag('DetailsPage');
+      }
+    }, {
+      key: "_mediaPlayer",
+      get: function get() {
+        return this.tag('MediaPlayer');
       }
     }], [{
       key: "getFonts",
@@ -10344,6 +10412,9 @@ var APP_com_devz_app_devis_tv = (function () {
           },
           DetailsPage: {
             type: DetailsPage
+          },
+          MediaPlayer: {
+            type: MediaPlayer
           }
         };
       }
@@ -10364,7 +10435,7 @@ var APP_com_devz_app_devis_tv = (function () {
           _createClass(ShowMain, [{
             key: "_getFocused",
             value: function _getFocused() {
-              return this.tag('MainPage');
+              return this._mainPage;
             }
           }]);
 
@@ -10407,6 +10478,54 @@ var APP_com_devz_app_devis_tv = (function () {
           }]);
 
           return ShowDetails;
+        }(this), /*#__PURE__*/function (_this3) {
+          _inherits(ShowPlayer, _this3);
+
+          var _super4 = _createSuper(ShowPlayer);
+
+          function ShowPlayer() {
+            _classCallCheck(this, ShowPlayer);
+
+            return _super4.apply(this, arguments);
+          }
+
+          _createClass(ShowPlayer, [{
+            key: "$enter",
+            value: function $enter() {
+              this._mainPage.setSmooth('alpha', 0.0001);
+
+              this._mediaPlayer.PlayVideo();
+            }
+          }, {
+            key: "$exit",
+            value: function $exit() {
+              this._mainPage.setSmooth('alpha', 1);
+            }
+          }, {
+            key: "_getFocused",
+            value: function _getFocused() {
+              return this._mediaPlayer;
+            }
+          }, {
+            key: "_handleBack",
+            value: function _handleBack() {
+              this._setState('ShowDetails');
+
+              this._mediaPlayer.StopVideo();
+            }
+          }, {
+            key: "_handleLeft",
+            value: function _handleLeft() {
+              this._mediaPlayer.SkipBackwards();
+            }
+          }, {
+            key: "_handleRight",
+            value: function _handleRight() {
+              this._mediaPlayer.SkipForward();
+            }
+          }]);
+
+          return ShowPlayer;
         }(this)];
       }
     }]);
