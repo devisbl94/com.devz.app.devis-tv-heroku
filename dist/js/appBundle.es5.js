@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Fri, 25 Mar 2022 04:48:00 GMT
+ * Generated: Fri, 25 Mar 2022 05:17:26 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -10325,12 +10325,13 @@ var APP_com_devz_app_devis_tv = (function () {
     }, {
       key: "PlayVideo",
       value: function PlayVideo() {
+        VideoPlayer.open(VideoPlayer.src);
         VideoPlayer.play();
       }
     }, {
       key: "StopVideo",
       value: function StopVideo() {
-        VideoPlayer.reload();
+        VideoPlayer.pause();
       }
     }, {
       key: "SkipForward",
@@ -10516,7 +10517,7 @@ var APP_com_devz_app_devis_tv = (function () {
           }, {
             key: "_handleLeft",
             value: function _handleLeft() {
-              this._mediaPlayer.SkipBackwards();
+              this._mediaPlayer.SkipBackward();
             }
           }, {
             key: "_handleRight",
