@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Sat, 26 Mar 2022 02:13:42 GMT
+ * Generated: Sat, 26 Mar 2022 05:48:24 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -9984,7 +9984,8 @@ var APP_com_devz_app_devis_tv = (function () {
         var ButtonStyle = {
           type: Button$1,
           radius: 5,
-          h: 60
+          h: 80,
+          w: 170
         };
         return {
           Background: {
@@ -10007,8 +10008,8 @@ var APP_com_devz_app_devis_tv = (function () {
               type: Row,
               alpha: 1,
               x: 300,
-              y: 80,
-              itemSpacing: 40,
+              y: 60,
+              itemSpacing: 60,
               scrollIndex: 0,
               signals: {
                 selectedChange: true
@@ -10314,15 +10315,32 @@ var APP_com_devz_app_devis_tv = (function () {
         VideoPlayer.pause();
       }
     }, {
-      key: "PlayVideo",
-      value: function PlayVideo() {
+      key: "StartVideo",
+      value: function StartVideo() {
         VideoPlayer.open(VideoPlayer.src);
         VideoPlayer.play();
+
+        this._controls.setSmooth('alpha', 0.8);
+
+        this._active = true;
+        this.UpdateControls();
       }
     }, {
       key: "StopVideo",
       value: function StopVideo() {
         VideoPlayer.pause();
+
+        this._controls.setSmooth('alpha', 0.0001);
+
+        this._active = false;
+        this.UpdateControls();
+      }
+    }, {
+      key: "PlayPauseVideo",
+      value: function PlayPauseVideo() {
+        VideoPlayer.playPause();
+        this._active = !this._active;
+        this.UpdateControls();
       }
     }, {
       key: "SkipForward",
@@ -10333,6 +10351,64 @@ var APP_com_devz_app_devis_tv = (function () {
       key: "SkipBackward",
       value: function SkipBackward() {
         VideoPlayer.skip(-5);
+      }
+    }, {
+      key: "UpdateControls",
+      value: function UpdateControls() {
+        if (this._active) {
+          this._controls.patch({
+            src: Utils.asset('../../static/images/mediapause.png')
+          });
+        } else {
+          this._controls.patch({
+            src: Utils.asset('../../static/images/mediaplay.png')
+          });
+        }
+      }
+    }, {
+      key: "$videoPlayerEnded",
+      value: function $videoPlayerEnded() {
+        this.fireAncestors('$exitPlayer');
+      }
+    }, {
+      key: "_controls",
+      get: function get() {
+        return this.tag('Controls');
+      }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          Controls: {
+            alpha: 0.0001,
+            h: 70,
+            w: 70,
+            x: 925,
+            y: 950,
+            Rewind: {
+              h: 120,
+              w: 70,
+              x: function x(_x) {
+                return _x - 155;
+              },
+              y: function y(_y) {
+                return _y - 100;
+              },
+              src: Utils.asset('../../static/images/mediarewind.png')
+            },
+            Forward: {
+              h: 120,
+              w: 70,
+              x: function x(_x2) {
+                return _x2 + 15;
+              },
+              y: function y(_y2) {
+                return _y2 - 100;
+              },
+              src: Utils.asset('../../static/images/mediaforward.png')
+            }
+          }
+        };
       }
     }]);
 
@@ -10371,6 +10447,11 @@ var APP_com_devz_app_devis_tv = (function () {
       key: "$enterPlayer",
       value: function $enterPlayer() {
         this._setState('ShowPlayer');
+      }
+    }, {
+      key: "$exitPlayer",
+      value: function $exitPlayer() {
+        this._setState('ShowDetails');
       }
     }, {
       key: "_mainPage",
@@ -10486,7 +10567,7 @@ var APP_com_devz_app_devis_tv = (function () {
             value: function $enter() {
               this._mainPage.setSmooth('alpha', 0.0001);
 
-              this._mediaPlayer.PlayVideo();
+              this._mediaPlayer.StartVideo();
             }
           }, {
             key: "$exit",
@@ -10497,6 +10578,11 @@ var APP_com_devz_app_devis_tv = (function () {
             key: "_getFocused",
             value: function _getFocused() {
               return this._mediaPlayer;
+            }
+          }, {
+            key: "_handleEnter",
+            value: function _handleEnter() {
+              this._mediaPlayer.PlayPauseVideo();
             }
           }, {
             key: "_handleBack",
