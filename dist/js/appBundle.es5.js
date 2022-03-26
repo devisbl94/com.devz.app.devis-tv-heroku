@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Sat, 26 Mar 2022 00:09:55 GMT
+ * Generated: Sat, 26 Mar 2022 00:18:21 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -10518,7 +10518,7 @@ var APP_com_devz_app_devis_tv = (function () {
             key: "_captureKey",
             value: function _captureKey(event) {
               switch (event.keyCode) {
-                case 10008:
+                case 10009:
                   this._handleBack();
 
                   break;
