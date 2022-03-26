@@ -3,7 +3,7 @@
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Fri, 25 Mar 2022 05:17:26 GMT
+ * Generated: Sat, 26 Mar 2022 00:09:55 GMT
  */
 
 var APP_com_devz_app_devis_tv = (function () {
@@ -9593,59 +9593,9 @@ var APP_com_devz_app_devis_tv = (function () {
     }
 
     _createClass(MediaCarousel, [{
-      key: "_init",
-      value: function _init() {
-        var _this = this;
-
-        var items = [];
-
-        this._endpoint(this._category).then(function (response) {
-          return response.json();
-        }).then(function (data) {
-          data.results.map(function (value) {
-            items.push({
-              type: MediaItem,
-              data: value
-            });
-          });
-          data.results.map(function (value) {
-            items.push({
-              type: MediaItem,
-              data: value
-            });
-          });
-          _this._row.items = items;
-          _this._data = data;
-        }).catch(function (error) {
-          console.log(error);
-        });
-      }
-    }, {
       key: "_getFocused",
       value: function _getFocused() {
         return this._row;
-      }
-    }, {
-      key: "_focus",
-      value: function _focus() {
-        this.tag('Row').patch({
-          PlaceHolder: {
-            text: {
-              highlight: true
-            }
-          }
-        });
-      }
-    }, {
-      key: "_unfocus",
-      value: function _unfocus() {
-        this.tag('Row').patch({
-          PlaceHolder: {
-            text: {
-              highlight: false
-            }
-          }
-        });
       }
     }, {
       key: "_handleEnter",
@@ -9660,77 +9610,31 @@ var APP_com_devz_app_devis_tv = (function () {
         this.tag('Label').text = value;
       }
     }, {
-      key: "category",
-      set: function set(value) {
-        this._category = value;
-      }
-    }, {
-      key: "endpoint",
-      set: function set(value) {
-        this._endpoint = value;
-      }
-    }, {
       key: "_row",
       get: function get() {
         return this.tag('Row');
       }
     }, {
-      key: "applyFilter",
-      value: function applyFilter(filterId) {
-        var _this2 = this;
+      key: "data",
+      set: function set(data) {
+        var _this = this;
 
-        var items = [];
+        this._data = [].concat(_toConsumableArray(data), _toConsumableArray(data));
+        var count = 0;
+        var interval = Registry.setInterval(function () {
+          if (count == _this._data.length) {
+            Registry.clearInterval(interval);
+          }
 
-        if (filterId == 0) {
-          this._data.results.map(function (item) {
-            items.push({
+          if (_this._data[count]) {
+            _this._row.appendItems([{
               type: MediaItem,
-              data: item
-            });
-          });
+              data: _this._data[count]
+            }]);
+          }
 
-          this._data.results.map(function (item) {
-            items.push({
-              type: MediaItem,
-              data: item
-            });
-          });
-        } else {
-          this._data.results.map(function (item) {
-            for (var index in item) {
-              if (index == 'genre_ids') {
-                item[index].map(function (genreId) {
-                  if (genreId === filterId) {
-                    items.push({
-                      type: MediaItem,
-                      data: item
-                    });
-                  }
-                });
-              }
-            }
-          });
-        }
-
-        this._row.items = [];
-
-        if (items.length > 0) {
-          this.tag('Row.PlaceHolder').setSmooth('alpha', 0.0001);
-          var count = 0;
-          var interval = Registry.setInterval(function () {
-            if (count == items.length) {
-              Registry.clearInterval(interval);
-            }
-
-            if (items[count]) {
-              _this2._row.appendItems([items[count]]);
-            }
-
-            count++;
-          }, 30);
-        } else {
-          this.tag('Row.PlaceHolder').setSmooth('alpha', 1);
-        }
+          count++;
+        }, 30);
       }
     }], [{
       key: "_template",
@@ -9751,21 +9655,7 @@ var APP_com_devz_app_devis_tv = (function () {
             y: 100,
             itemSpacing: 40,
             wrapSelected: true,
-            scrollIndex: 0,
-            PlaceHolder: {
-              alpha: 0.0001,
-              x: 620,
-              y: 200,
-              text: {
-                text: 'No items available',
-                fontColor: Colors('white').get(),
-                fontFace: 'Regular',
-                fontSize: 48,
-                highlightPaddingLeft: 20,
-                highlightPaddingRight: 20,
-                highlightColor: 0x8c000000
-              }
-            }
+            scrollIndex: 0
           }
         };
       }
@@ -9930,15 +9820,162 @@ var APP_com_devz_app_devis_tv = (function () {
 
     _createClass(MainPage, [{
       key: "_init",
-      value: function _init() {
-        this._setState('NavBar');
+      value: function () {
+        var _init2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          var _this = this;
+
+          var contentData;
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  contentData = [{
+                    label: 'Popular movies',
+                    category: 'movie',
+                    endpoint: getPopular
+                  }, {
+                    label: 'Movies trending right now',
+                    category: 'movie',
+                    endpoint: getTrending
+                  }, {
+                    label: 'Top rated movies',
+                    category: 'movie',
+                    endpoint: getTopRated
+                  }, {
+                    label: 'Popular animated movies',
+                    category: 'movie',
+                    endpoint: getAnimatedMovies
+                  }, {
+                    label: 'Upcoming movie releases',
+                    category: 'movie',
+                    endpoint: getUpcomingMovieReleases
+                  }, {
+                    label: 'Popular series',
+                    category: 'tv',
+                    endpoint: getPopular
+                  }, {
+                    label: 'TV shows trending right now',
+                    category: 'tv',
+                    endpoint: getTrending
+                  }, {
+                    label: 'Top rated series',
+                    category: 'tv',
+                    endpoint: getTopRated
+                  }, {
+                    label: 'TV shows airing today',
+                    category: 'tv',
+                    endpoint: getShowsAiring
+                  }, {
+                    label: 'Recommended documentaries',
+                    category: 'tv',
+                    endpoint: getDocumentaries
+                  }];
+                  this._data = [];
+                  contentData.map( /*#__PURE__*/function () {
+                    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(row) {
+                      var response, data;
+                      return regeneratorRuntime.wrap(function _callee$(_context) {
+                        while (1) {
+                          switch (_context.prev = _context.next) {
+                            case 0:
+                              _context.next = 2;
+                              return row.endpoint(row.category);
+
+                            case 2:
+                              response = _context.sent;
+                              _context.next = 5;
+                              return response.json();
+
+                            case 5:
+                              data = _context.sent.results;
+
+                              _this._content.appendItems([{
+                                type: MediaCarousel,
+                                label: row.label,
+                                data: data
+                              }]);
+
+                              _this._data.push({
+                                label: row.label,
+                                data: data
+                              });
+
+                              _this._setState('NavBar');
+
+                            case 9:
+                            case "end":
+                              return _context.stop();
+                          }
+                        }
+                      }, _callee);
+                    }));
+
+                    return function (_x) {
+                      return _ref.apply(this, arguments);
+                    };
+                  }());
+
+                case 3:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        }));
+
+        function _init() {
+          return _init2.apply(this, arguments);
+        }
+
+        return _init;
+      }()
+    }, {
+      key: "_navbar",
+      get: function get() {
+        return this.tag('NavBar');
+      }
+    }, {
+      key: "_content",
+      get: function get() {
+        return this.tag('Content');
       }
     }, {
       key: "selectedChange",
       value: function selectedChange(itemSelected) {
+        var _this2 = this;
+
         Registry.clearIntervals();
-        this.tag('Content').items.map(function (row) {
-          row.applyFilter(itemSelected.genreId);
+        this._content.items = [];
+
+        this._data.map(function (row) {
+          if (itemSelected.genreId === 0) {
+            _this2._content.appendItems([{
+              type: MediaCarousel,
+              label: row.label,
+              data: row.data
+            }]);
+          } else {
+            var items = [];
+            row.data.map(function (item) {
+              for (var index in item) {
+                if (index == 'genre_ids') {
+                  item[index].map(function (genreId) {
+                    if (itemSelected.genreId === genreId) {
+                      items.push(item);
+                    }
+                  });
+                }
+              }
+            });
+
+            if (items.length > 0) {
+              _this2._content.appendItems([{
+                type: MediaCarousel,
+                label: row.label,
+                data: items
+              }]);
+            }
+          }
         });
       }
     }], [{
@@ -9958,58 +9995,7 @@ var APP_com_devz_app_devis_tv = (function () {
           },
           Content: {
             type: Column,
-            y: 200,
-            items: [{
-              type: MediaCarousel,
-              label: 'Popular movies',
-              category: 'movie',
-              endpoint: getPopular
-            }, {
-              type: MediaCarousel,
-              label: 'Movies trending right now',
-              category: 'movie',
-              endpoint: getTrending
-            }, {
-              type: MediaCarousel,
-              label: 'Top rated movies',
-              category: 'movie',
-              endpoint: getTopRated
-            }, {
-              type: MediaCarousel,
-              label: 'Popular animated movies',
-              category: 'movie',
-              endpoint: getAnimatedMovies
-            }, {
-              type: MediaCarousel,
-              label: 'Upcoming movie releases',
-              category: 'movie',
-              endpoint: getUpcomingMovieReleases
-            }, {
-              type: MediaCarousel,
-              label: 'Popular series',
-              category: 'tv',
-              endpoint: getPopular
-            }, {
-              type: MediaCarousel,
-              label: 'TV shows trending right now',
-              category: 'tv',
-              endpoint: getTrending
-            }, {
-              type: MediaCarousel,
-              label: 'Top rated series',
-              category: 'tv',
-              endpoint: getTopRated
-            }, {
-              type: MediaCarousel,
-              label: 'TV shows airing today',
-              category: 'tv',
-              endpoint: getShowsAiring
-            }, {
-              type: MediaCarousel,
-              label: 'Recommended documentaries',
-              category: 'tv',
-              endpoint: getDocumentaries
-            }]
+            y: 200
           },
           Header: {
             alpha: 0.8,
@@ -10020,8 +10006,8 @@ var APP_com_devz_app_devis_tv = (function () {
             NavBar: {
               type: Row,
               alpha: 1,
-              x: 150,
-              y: 60,
+              x: 300,
+              y: 80,
               itemSpacing: 40,
               scrollIndex: 0,
               signals: {
@@ -10055,8 +10041,8 @@ var APP_com_devz_app_devis_tv = (function () {
     }, {
       key: "_states",
       value: function _states() {
-        return [/*#__PURE__*/function (_this) {
-          _inherits(NavBar, _this);
+        return [/*#__PURE__*/function (_this3) {
+          _inherits(NavBar, _this3);
 
           var _super2 = _createSuper(NavBar);
 
@@ -10069,7 +10055,7 @@ var APP_com_devz_app_devis_tv = (function () {
           _createClass(NavBar, [{
             key: "_getFocused",
             value: function _getFocused() {
-              return this.tag('NavBar');
+              return this._navbar;
             }
           }, {
             key: "_handleDown",
@@ -10079,8 +10065,8 @@ var APP_com_devz_app_devis_tv = (function () {
           }]);
 
           return NavBar;
-        }(this), /*#__PURE__*/function (_this2) {
-          _inherits(Content, _this2);
+        }(this), /*#__PURE__*/function (_this4) {
+          _inherits(Content, _this4);
 
           var _super3 = _createSuper(Content);
 
@@ -10093,7 +10079,7 @@ var APP_com_devz_app_devis_tv = (function () {
           _createClass(Content, [{
             key: "_getFocused",
             value: function _getFocused() {
-              return this.tag('Content');
+              return this._content;
             }
           }, {
             key: "_handleUp",
@@ -10224,27 +10210,29 @@ var APP_com_devz_app_devis_tv = (function () {
                 x: 100,
                 y: 250,
                 text: _objectSpread2(_objectSpread2({}, textStyle), {}, {
-                  lineHeight: 36,
+                  lineHeight: 40,
                   wordWrapWidth: 700,
                   wordWrap: true,
-                  maxLines: 12,
+                  maxLines: 11,
                   maxLinesSuffix: '...',
-                  fontSize: 24
+                  fontSize: 28
                 })
               },
               Buttons: {
                 type: Row,
                 x: 200,
                 y: 750,
-                itemSpacing: 75,
+                itemSpacing: 100,
                 items: [{
                   type: Button$1,
                   title: 'Play now',
+                  h: 60,
+                  w: 170,
                   radius: 5,
                   icon: {
                     src: Utils.asset('./images/play.png'),
-                    size: 16,
-                    spacing: 8
+                    size: 20,
+                    spacing: 10
                   },
                   onEnter: function onEnter(event) {
                     event.fireAncestors('$enterPlayer');
@@ -10252,11 +10240,13 @@ var APP_com_devz_app_devis_tv = (function () {
                 }, {
                   type: Button$1,
                   title: 'Add to favourites',
+                  h: 60,
+                  w: 170,
                   radius: 5,
                   icon: {
                     src: Utils.asset('./images/star.png'),
-                    size: 16,
-                    spacing: 8
+                    size: 20,
+                    spacing: 10
                   }
                 }]
               },
@@ -10268,9 +10258,9 @@ var APP_com_devz_app_devis_tv = (function () {
               },
               ReleaseDate: {
                 x: 1020,
-                y: 680,
+                y: 690,
                 text: _objectSpread2(_objectSpread2({}, textStyle), {}, {
-                  fontSize: 18
+                  fontSize: 22
                 })
               }
             },
@@ -10366,8 +10356,8 @@ var APP_com_devz_app_devis_tv = (function () {
       }
     }, {
       key: "$getItemSelected",
-      value: function $getItemSelected(itemlSelected) {
-        this._detailsPage.data = itemlSelected;
+      value: function $getItemSelected(itemSelected) {
+        this._detailsPage.data = itemSelected;
 
         this._setState('ShowDetails');
       }
@@ -10523,6 +10513,19 @@ var APP_com_devz_app_devis_tv = (function () {
             key: "_handleRight",
             value: function _handleRight() {
               this._mediaPlayer.SkipForward();
+            }
+          }, {
+            key: "_captureKey",
+            value: function _captureKey(event) {
+              switch (event.keyCode) {
+                case 10008:
+                  this._handleBack();
+
+                  break;
+
+                default:
+                  return false;
+              }
             }
           }]);
 
